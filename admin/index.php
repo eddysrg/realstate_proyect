@@ -1,9 +1,12 @@
-<?php 
+<?php
 
-echo "<pre>";
-var_dump($_POST);
-echo "</pre>";
+require '../includes/funciones.php';
 
+$auth = estaAutenticado();
+
+if (!$auth) {
+    header("Location: /");
+}
 
 //Importar la conexion
 require "../includes/config/database.php";
@@ -18,11 +21,11 @@ $resultadoConsulta = $db->query($query);
 //Muestra mensaje condicional
 $resultado = $_GET["resultado"] ?? null;
 
-if($_SERVER["REQUEST_METHOD"] === "POST") {
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $id = $_POST["id"];
-    $id = filter_var($id ,FILTER_VALIDATE_INT);
+    $id = filter_var($id, FILTER_VALIDATE_INT);
 
-    if($id) {
+    if ($id) {
 
         //Eliminar el archivo
         $query = "SELECT imagen FROM propiedades WHERE id = ${id}";
@@ -38,44 +41,43 @@ if($_SERVER["REQUEST_METHOD"] === "POST") {
 
         $resultado = $db->query($query);
 
-        if($resultado) {
+        if ($resultado) {
             header("location: /admin?resultado=3");
         }
     }
 }
 
 //Incluye un template
-require '../includes/funciones.php';
 incluirTemplate('header');
 ?>
 
 <main class="contenedor seccion">
-        <h1>Administrador de Bienes Raices</h1>
+    <h1>Administrador de Bienes Raices</h1>
 
-        <?php if(intval($resultado) === 1) : ?>
-            <p class="alerta exito">Anuncio Creado Correctamente</p>
-        <?php elseif(intval($resultado) === 2) : ?>
-            <p class="alerta exito">Anuncio Actualizado Correctamente</p>
-        <?php elseif(intval($resultado) === 3) : ?>
-            <p class="alerta exito">Anuncio Eliminado Correctamente</p>
-        <?php endif; ?>
+    <?php if (intval($resultado) === 1) : ?>
+        <p class="alerta exito">Anuncio Creado Correctamente</p>
+    <?php elseif (intval($resultado) === 2) : ?>
+        <p class="alerta exito">Anuncio Actualizado Correctamente</p>
+    <?php elseif (intval($resultado) === 3) : ?>
+        <p class="alerta exito">Anuncio Eliminado Correctamente</p>
+    <?php endif; ?>
 
-        <a href="/admin/propiedades/crear.php" class="boton boton-verde">Nueva Propiedad</a>
+    <a href="/admin/propiedades/crear.php" class="boton boton-verde">Nueva Propiedad</a>
 
-        <table class="propiedades">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Título</th>
-                    <th>Imagen</th>
-                    <th>Precio</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
+    <table class="propiedades">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Título</th>
+                <th>Imagen</th>
+                <th>Precio</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
 
-            <!-- Mostrar los resultados -->
-            <tbody>
-                <?php while($propiedad = $resultadoConsulta->fetch_assoc()): ?>
+        <!-- Mostrar los resultados -->
+        <tbody>
+            <?php while ($propiedad = $resultadoConsulta->fetch_assoc()) : ?>
                 <tr>
                     <td><?php echo $propiedad["id"]; ?></td>
                     <td><?php echo $propiedad["titulo"]; ?></td>
@@ -89,16 +91,16 @@ incluirTemplate('header');
                         <a href="admin/propiedades/actualizar.php?id=<?php echo $propiedad["id"]; ?>" class="boton-amarillo-block">Actualizar</a>
                     </td>
                 </tr>
-                <?php endwhile; ?>
-            </tbody>
-        </table>
+            <?php endwhile; ?>
+        </tbody>
+    </table>
 
 </main>
 
-<?php 
+<?php
 
 //Cerrar la conexión
 $db->close();
 
-incluirTemplate("footer") 
+incluirTemplate("footer")
 ?>

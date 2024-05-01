@@ -1,0 +1,17 @@
+{
+  "name": "eddysrg/realstate_poo",
+  "description": "Creando un proyecto con POO",
+  "type": "project",
+  "authors": [
+    {
+      "name": "Eduardo Ramírez",
+      "email": "eddysrg@outlook.com"
+    }
+  ],
+  "require": {},
+  "autoload": {
+    "psr-4": {
+      "App\\": "./classes"
+    }
+  }
+}
