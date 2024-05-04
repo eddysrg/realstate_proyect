@@ -3,19 +3,7 @@ require '../../includes/app.php';
 
 use App\Propiedad;
 
-$propiedad = new Propiedad;
-
-echo "<pre>";
-var_dump($propiedad);
-echo "</pre>";
-exit;
-
-
-$auth = estaAutenticado();
-
-if (!$auth) {
-    header("Location: /");
-}
+estaAutenticado();
 
 $db = conectarDB();
 
@@ -42,9 +30,13 @@ $vendedores_id = '';
 // Ejecutar el código después de que el usuario envia el formulario
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-    echo "<pre>";
+    $propiedad = new Propiedad($_POST);
+
+    $propiedad->guardar();
+
+    /*     echo "<pre>";
     var_dump($_POST);
-    echo "</pre>";
+    echo "</pre>"; */
 
     echo "<pre>";
     var_dump($_FILES);
@@ -119,10 +111,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         //Subir la imagen
         move_uploaded_file($imagen["tmp_name"], $carpetaImagenes . $nombreImagen);
 
-        //Insertar en la base de datos
-        $query = "INSERT INTO propiedades (titulo, precio, imagen, descripcion, habitaciones, wc, estacionamiento, creado, vendedores_id) VALUES ('$titulo', '$precio', '$nombreImagen', '$descripcion', '$habitaciones', '$wc', '$estacionamiento', '$creado', '$vendedores_id')";
-
-
         $resultado = $db->query($query);
 
         if ($resultado) {
@@ -183,7 +171,7 @@ incluirTemplate('header');
         <fieldset>
             <legend>Vendedor</legend>
 
-            <select name="vendedor">
+            <select name="vendedores_id">
                 <option value="">-- Seleccione --</option>
                 <?php while ($vendedor = $resultado->fetch_assoc()) : ?>
                     <option <?php echo $vendedores_id === $vendedor["id"] ? "selected" : ""; ?> value="<?php echo $vendedor["id"] ?>"><?php echo $vendedor["nombre"] . " " . $vendedor["apellido"]; ?></option>
